@@ -67,6 +67,8 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 | `--weight` | - | Weight axis choices: `100`, `200`, `300`, `400`, `500`, `600`, `700` | `400` |
 | `--grade` | - | Grade axis choices: `-25`, `0`, `200` | `0` |
 | `--output` | `-o` | Output file or directory; a wrong extension is replaced with a warning | `./ic_<name>.<ext>` |
+| `--limit` | - | Maximum number of search results | `20` |
+| `--json` | - | Print search results as JSON (name, categories, tags, popularity) | `False` |
 | `--package` | - | Kotlin package for `compose` (inferred from a `java/` or `kotlin/` output path) | - |
 | `--refresh` | - | Force refresh metadata cache (refreshed automatically every 7 days) | `False` |
 

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Download Material Symbols icons from Google Fonts for Android projects.
-Downloads directly as Android Vector Drawable XML format.
+Search and download Material Symbols icons from Google Fonts as Android
+Vector Drawable XML, SVG, Jetpack Compose ImageVector, or Apple symbol SVG.
 
 Usage:
-    python download_icon.py --search home
-    python download_icon.py --name home --output ic_home.xml
-    python download_icon.py --name settings --style rounded
+    python3 download_icon.py --search "arrow back"
+    python3 download_icon.py --name home --output ic_home.xml
+    python3 download_icon.py --name home settings --format svg --output icons/
+    python3 download_icon.py --name arrow_back --format compose --output app/src/main/java/com/example/icons/
 """
 
 import argparse
@@ -403,7 +404,7 @@ def download_material_symbols(
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Download Material Symbols icons from Google Fonts in XML, Compose, or SVG formats.'
+        description='Search and download Material Symbols icons from Google Fonts as XML, SVG, Compose, or Apple symbol SVG.'
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
@@ -467,6 +468,17 @@ def main():
         help='Output file or directory (default: ic_<name>.<ext>)'
     )
     parser.add_argument(
+        '--limit',
+        type=int,
+        default=20,
+        help='Maximum number of search results (default: 20)'
+    )
+    parser.add_argument(
+        '--json',
+        action='store_true',
+        help='Print search results as JSON'
+    )
+    parser.add_argument(
         '--package',
         type=str,
         help='Kotlin package for --format compose (default: inferred from a java/ or kotlin/ output path)'
@@ -483,19 +495,31 @@ def main():
         # Search mode
         metadata = fetch_metadata(force_refresh=args.refresh)
         results = search_icons(metadata, args.search)
+        if args.json:
+            print(json.dumps([
+                {
+                    'name': icon.get('name'),
+                    'categories': icon.get('categories', []),
+                    'tags': icon.get('tags', [])[:10],
+                    'popularity': icon.get('popularity', 0),
+                }
+                for icon in results[:args.limit]
+            ], indent=2))
+            sys.exit(0)
+
         if not results:
             print(f"No icons found matching '{args.search}'.")
             sys.exit(0)
 
         print(f"Found {len(results)} icon(s) matching '{args.search}':\n")
-        for icon in results[:50]:  # Limit output
+        for icon in results[:args.limit]:
             name = icon.get('name', '')
             categories = icon.get('categories', [])
             print(f"  {name}")
             if categories:
                 print(f"    Categories: {', '.join(categories)}")
-        if len(results) > 50:
-            print(f"\n... and {len(results) - 50} more (showing first 50)")
+        if len(results) > args.limit:
+            print(f"\n... and {len(results) - args.limit} more (showing first {args.limit})")
 
     elif args.name:
         # Download mode
