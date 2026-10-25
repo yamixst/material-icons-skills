@@ -10,9 +10,11 @@ This skill provides tools to search and download Material Symbols icons from Goo
 ## Overview
 
 Material Symbols are Google's modern icon set, available in three styles:
-- **Outlined** (default): Thin strokes, minimalist design
-- **Rounded**: Soft, rounded corners
-- **Sharp**: Angular, precise edges
+- **Outlined** (default): Standard corners and stroke ends
+- **Rounded**: Rounded corners and stroke ends
+- **Sharp**: Square corners and stroke ends
+
+Stroke thickness is controlled by the Weight axis, not by the style.
 
 Supported download formats:
 - **Android XML**: Android Vector Drawable XML, ready to use in `res/drawable`
