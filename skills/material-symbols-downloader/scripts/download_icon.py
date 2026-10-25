@@ -304,7 +304,7 @@ def main():
     parser.add_argument(
         '-sz', '--size',
         type=int,
-        choices=[18, 20, 24, 36, 48],
+        choices=[20, 24, 40, 48],
         default=24,
         help='Icon size in pixels (default: 24)'
     )

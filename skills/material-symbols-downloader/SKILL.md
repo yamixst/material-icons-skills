@@ -61,7 +61,7 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 | `--search` | `-q` | Search icons by name (lists matching icons) | - |
 | `--name` | `-n` | Icon name to download | - |
 | `--style` | `-s` | Icon style: `outlined`, `rounded`, `sharp` | `outlined` |
-| `--size` | `-sz` | Size in px: `18`, `20`, `24`, `36`, `48` | `24` |
+| `--size` | `-sz` | Size in px: `20`, `24`, `40`, `48` | `24` |
 | `--format` | `-f` | Output format: `xml`, `svg`, `compose`, `apple` | `xml` |
 | `--fill` | - | Fill axis: `0` or `1` | `0` |
 | `--weight` | - | Weight axis choices: `100`, `200`, `300`, `400`, `500`, `600`, `700` | `400` |
@@ -142,11 +142,10 @@ Icon(
 
 ## Available Sizes
 
-Material Symbols are optimized for these sizes:
-- **18px**: Small inline icons
-- **20px**: Standard mobile icons
+Material Symbols are published in these sizes:
+- **20px**: Dense UI and small inline icons
 - **24px**: Default material icon size
-- **36px**: Medium display icons
+- **40px**: Medium display icons
 - **48px**: Large display icons
 
 ## Icon Naming Convention
