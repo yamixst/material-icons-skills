@@ -66,7 +66,7 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 | `--fill` | - | Fill axis: `0` or `1` | `0` |
 | `--weight` | - | Weight axis choices: `100`, `200`, `300`, `400`, `500`, `600`, `700` | `400` |
 | `--grade` | - | Grade axis choices: `-25`, `0`, `200` | `0` |
-| `--output` | `-o` | Output file path (default: `ic_<name>.<ext>`) | `./ic_<name>.<ext>` |
+| `--output` | `-o` | Output file or directory; a wrong extension is replaced with a warning | `./ic_<name>.<ext>` |
 | `--refresh` | - | Force refresh metadata cache | `False` |
 
 ## Usage Examples

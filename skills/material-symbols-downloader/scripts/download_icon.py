@@ -264,6 +264,31 @@ def build_download_url(
     )
 
 
+def default_file_name(icon_name, output_format):
+    """Default output file name for an icon."""
+    return f"ic_{icon_name}{OUTPUT_FORMATS[output_format]}"
+
+
+def resolve_output_path(icon_name, output_path, output_format):
+    """Resolve the output file, accepting a directory and fixing a wrong extension."""
+    if output_path is None:
+        return Path(default_file_name(icon_name, output_format))
+
+    output_file = Path(output_path)
+    if output_file.is_dir() or output_path.endswith(('/', '\\')):
+        return output_file / default_file_name(icon_name, output_format)
+
+    output_suffix = OUTPUT_FORMATS[output_format]
+    if output_file.suffix != output_suffix:
+        fixed = output_file.with_suffix(output_suffix)
+        print(
+            f"Warning: '{output_file}' does not match format '{output_format}', saving as '{fixed}'.",
+            file=sys.stderr,
+        )
+        return fixed
+    return output_file
+
+
 def read_text_response(response):
     """Read an HTTP response body as UTF-8 text, handling gzip when present."""
     content = response.read()
@@ -312,15 +337,7 @@ def download_material_symbols(
         with urllib.request.urlopen(req, timeout=30) as response:
             content = read_text_response(response)
 
-            # Determine output path
-            output_suffix = OUTPUT_FORMATS.get(output_format, '.xml')
-            if output_path is None:
-                output_file = Path(f"ic_{icon_name}{output_suffix}")
-            else:
-                output_file = Path(output_path)
-                if output_file.suffix != output_suffix:
-                    output_file = output_file.with_suffix(output_suffix)
-
+            output_file = resolve_output_path(icon_name, output_path, output_format)
             # Ensure output directory exists
             output_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -402,7 +419,7 @@ def main():
     parser.add_argument(
         '-o', '--output',
         type=str,
-        help='Output file path (default: ic_<name>.<ext>)'
+        help='Output file or directory (default: ic_<name>.<ext>)'
     )
     parser.add_argument(
         '--refresh',
