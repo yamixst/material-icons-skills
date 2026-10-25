@@ -1,5 +1,6 @@
 # Material Icons Skills
 
+[![Tests](https://github.com/yamixst/material-icons-skills/actions/workflows/tests.yml/badge.svg)](https://github.com/yamixst/material-icons-skills/actions/workflows/tests.yml)
 [![skills.sh](https://skills.sh/b/yamixst/material-icons-skills)](https://skills.sh/yamixst/material-icons-skills)
 
 Agent skill for searching and downloading **Material Icons** (Google Material Symbols) from Google Fonts. Your AI coding agent can grab any of the 3,000+ icons and save it as an **SVG**, an **Android Vector Drawable XML** (`ic_*.xml`), a **Jetpack Compose `ImageVector`** Kotlin file, or an **Apple / Xcode symbol SVG**, ready to use in your project.
@@ -66,6 +67,14 @@ python3 scripts/download_icon.py --name toggle_on --format apple --fill 1 --grad
 - Icons are fetched from the official Google Fonts Material Symbols source.
 - Material Symbols are licensed by Google under the Apache License 2.0.
 - Skill instructions live in `SKILL.md` for agent consumption.
+
+## Development
+
+Run the offline unit tests:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
 
 ## License
 
