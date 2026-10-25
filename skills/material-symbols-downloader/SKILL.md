@@ -68,7 +68,7 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 | `--grade` | - | Grade axis choices: `-25`, `0`, `200` | `0` |
 | `--output` | `-o` | Output file or directory; a wrong extension is replaced with a warning | `./ic_<name>.<ext>` |
 | `--package` | - | Kotlin package for `compose` (inferred from a `java/` or `kotlin/` output path) | - |
-| `--refresh` | - | Force refresh metadata cache | `False` |
+| `--refresh` | - | Force refresh metadata cache (refreshed automatically every 7 days) | `False` |
 
 ## Usage Examples
 

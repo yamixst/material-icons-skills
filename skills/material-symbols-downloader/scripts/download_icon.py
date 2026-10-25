@@ -17,6 +17,7 @@ import json
 import re
 import sys
 import tempfile
+import time
 import urllib.request
 import urllib.error
 from pathlib import Path
@@ -24,6 +25,7 @@ from pathlib import Path
 METADATA_URL = "https://fonts.google.com/metadata/icons?incomplete=1&key=material_symbols"
 CACHE_DIR = Path(tempfile.gettempdir()) / f"google-fonts-{getpass.getuser()}"
 CACHE_FILE = CACHE_DIR / "google_icons_metadata.json"
+CACHE_MAX_AGE = 7 * 24 * 60 * 60  # Refresh metadata weekly to pick up new icons
 SYMBOLS_FAMILY = "Material Symbols Outlined"
 
 # Material Symbols style mapping
@@ -56,7 +58,8 @@ def fetch_metadata(force_refresh=False, exit_on_error=True):
     """Fetch and cache icon metadata. Returns None on failure when exit_on_error is False."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-    if not force_refresh and CACHE_FILE.exists():
+    cache_fresh = CACHE_FILE.exists() and time.time() - CACHE_FILE.stat().st_mtime < CACHE_MAX_AGE
+    if not force_refresh and cache_fresh:
         try:
             with open(CACHE_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -471,7 +474,7 @@ def main():
     parser.add_argument(
         '--refresh',
         action='store_true',
-        help='Force refresh metadata cache'
+        help='Force refresh metadata cache (refreshed automatically every 7 days)'
     )
 
     args = parser.parse_args()
