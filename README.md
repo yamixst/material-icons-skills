@@ -39,6 +39,7 @@ The agent searches the Material Symbols catalog, picks a matching icon, and save
 ```text
 skills/material-symbols-downloader/SKILL.md
 skills/material-symbols-downloader/scripts/download_icon.py
+skills/material-symbols-downloader/references/google-fonts-urls.md
 ```
 
 ## Supported Formats
