@@ -2,13 +2,33 @@
 
 [![skills.sh](https://skills.sh/b/yamixst/material-icons-skills)](https://skills.sh/yamixst/material-icons-skills)
 
-Download Material Symbols icons from Google Fonts as Android XML, SVG, Compose Kotlin, or Apple symbol SVG.
+Agent skill for searching and downloading **Material Icons** (Google Material Symbols) from Google Fonts. Your AI coding agent can grab any of the 3,000+ icons and save it as an **SVG**, an **Android Vector Drawable XML** (`ic_*.xml`), a **Jetpack Compose `ImageVector`** Kotlin file, or an **Apple / Xcode symbol SVG**, ready to use in your project.
+
+Works with Claude Code and other AI coding agents supported by the [skills CLI](https://skills.sh) (Cursor, Codex, Gemini CLI, and more).
+
+## Why
+
+- No more manually browsing fonts.google.com/icons, downloading, and renaming files.
+- Outlined, Rounded, and Sharp styles, with custom Fill, Weight, and Grade axes.
+- One Python script using only the standard library. Runs on Linux, macOS, and Windows.
 
 ## Install
 
 ```bash
 npx skills@latest add yamixst/material-icons-skills
 ```
+
+## Usage
+
+Once installed, just ask your agent:
+
+> Add a settings icon to the toolbar in my Compose screen
+
+> Download the `home` Material icon as a rounded SVG for the website
+
+> I need filled `favorite` and `share` vector drawables for my Android app
+
+The agent searches the Material Symbols catalog, picks a matching icon, and saves it in the right format and location (for example, `res/drawable/ic_settings.xml` or `SettingsIcon.kt`).
 
 ## Skill
 
@@ -17,8 +37,8 @@ npx skills@latest add yamixst/material-icons-skills
 ## Repository Layout
 
 ```text
-SKILL.md
-scripts/download_icon.py
+skills/material-symbols-downloader/SKILL.md
+skills/material-symbols-downloader/scripts/download_icon.py
 ```
 
 ## Supported Formats
@@ -26,9 +46,11 @@ scripts/download_icon.py
 - `xml`: Android Vector Drawable XML
 - `svg`: Standard SVG asset
 - `compose`: Kotlin `ImageVector`
-- `apple`: Google `_symbol.svg` export
+- `apple`: Apple / Xcode symbol SVG (Google `_symbol.svg` export)
 
 ## Example Commands
+
+The script can also be run directly, without an agent:
 
 ```bash
 python3 scripts/download_icon.py --search toggle_on
@@ -40,8 +62,8 @@ python3 scripts/download_icon.py --name toggle_on --format apple --fill 1 --grad
 
 ## Notes
 
-- Works on Linux, macOS, and Windows.
-- Uses only the Python standard library.
+- Icons are fetched from the official Google Fonts Material Symbols source.
+- Material Symbols are licensed by Google under the Apache License 2.0.
 - Skill instructions live in `SKILL.md` for agent consumption.
 
 ## License

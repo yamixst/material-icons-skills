@@ -1,11 +1,11 @@
 ---
 name: material-symbols-downloader
-description: Search and download Material Symbols (Material Icons) from Google Fonts as Android Vector Drawable XML, SVG, Android Compose Kotlin ImageVector, or Apple symbol SVG. Supports outlined, rounded, and sharp styles plus fill, weight, and grade variants.
+description: Search and download Material Symbols (Material Icons, Google icons, Material Design icons) from Google Fonts as SVG, Android Vector Drawable XML (ic_*.xml in res/drawable), Jetpack Compose Kotlin ImageVector, or Apple/Xcode symbol SVG. Supports outlined, rounded, and sharp styles plus fill, weight, and grade variants. Use when the user needs an icon, asks for a Material icon by name, or wants to add an icon to an Android, Compose, web, or iOS project.
 ---
 
 # Material Symbols Downloader
 
-This skill provides tools to search and download Material Symbols icons from Google Fonts for Android, web, and Apple development. Icons can be downloaded as Android Vector Drawable XML, SVG, or Android Compose Kotlin.
+This skill provides tools to search and download Material Symbols icons from Google Fonts for Android, web, and Apple development. Icons can be downloaded as Android Vector Drawable XML, SVG, Android Compose Kotlin, or Apple symbol SVG.
 
 ## Overview
 
