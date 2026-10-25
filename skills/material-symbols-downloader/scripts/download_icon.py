@@ -412,7 +412,8 @@ def main():
     group.add_argument(
         '-n', '--name',
         type=str,
-        help='Icon name to download'
+        nargs='+',
+        help='Icon name(s) to download; with several names --output must be a directory'
     )
 
     parser.add_argument(
@@ -495,21 +496,34 @@ def main():
 
     elif args.name:
         # Download mode
+        names = list(dict.fromkeys(args.name))
+        if len(names) > 1 and args.output and Path(args.output).suffix and not Path(args.output).is_dir():
+            parser.error('--output must be a directory when downloading several icons')
+
         metadata = fetch_metadata(force_refresh=args.refresh, exit_on_error=False)
-        if not check_icon_name(metadata, args.name):
+        known = [check_icon_name(metadata, name) for name in names]
+        if not all(known):
             sys.exit(1)
-        success = download_material_symbols(
-            icon_name=args.name,
-            style=args.style,
-            size=args.size,
-            output_path=args.output,
-            output_format=args.format,
-            fill=args.fill,
-            weight=args.weight,
-            grade=args.grade,
-            package=args.package,
-        )
-        sys.exit(0 if success else 1)
+
+        output = args.output
+        if len(names) > 1 and output and not output.endswith(('/', '\\')):
+            output += '/'
+
+        results = [
+            download_material_symbols(
+                icon_name=name,
+                style=args.style,
+                size=args.size,
+                output_path=output,
+                output_format=args.format,
+                fill=args.fill,
+                weight=args.weight,
+                grade=args.grade,
+                package=args.package,
+            )
+            for name in names
+        ]
+        sys.exit(0 if all(results) else 1)
 
 
 if __name__ == '__main__':

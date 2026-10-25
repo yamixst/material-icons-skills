@@ -59,7 +59,7 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 | Parameter | Short | Description | Default |
 |-----------|-------|-------------|---------|
 | `--search` | `-q` | Search icons by name and tags, best matches first | - |
-| `--name` | `-n` | Icon name to download | - |
+| `--name` | `-n` | Icon name(s) to download; with several names `--output` must be a directory | - |
 | `--style` | `-s` | Icon style: `outlined`, `rounded`, `sharp` | `outlined` |
 | `--size` | `-sz` | Size in px: `20`, `24`, `40`, `48` | `24` |
 | `--format` | `-f` | Output format: `xml`, `svg`, `compose`, `apple` | `xml` |
@@ -86,6 +86,9 @@ python3 scripts/download_icon.py --search settings
 ```bash
 # Basic download (outlined, 24px) - produces XML
 python3 scripts/download_icon.py --name home --output app/src/main/res/drawable/ic_home.xml
+
+# Several icons at once into a directory
+python3 scripts/download_icon.py --name home settings delete --output app/src/main/res/drawable/
 
 # Rounded style
 python3 scripts/download_icon.py --name settings --style rounded --output app/src/main/res/drawable/ic_settings.xml
