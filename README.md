@@ -1,18 +1,18 @@
-# Google Icons Skills
+# Material Icons Skills
 
-[![skills.sh](https://skills.sh/b/yamixst/google-icons-skills)](https://skills.sh/yamixst/google-icons-skills)
+[![skills.sh](https://skills.sh/b/yamixst/material-icons-skills)](https://skills.sh/yamixst/material-icons-skills)
 
 Download Material Symbols icons from Google Fonts as Android XML, SVG, Compose Kotlin, or Apple symbol SVG.
 
 ## Install
 
 ```bash
-npx skills@latest add yamixst/google-icons-skills
+npx skills@latest add yamixst/material-icons-skills
 ```
 
 ## Skill
 
-- `google-icons`: Search and download Material Symbols in multiple output formats.
+- `material-symbols-downloader`: Search and download Material Symbols in multiple output formats.
 
 ## Repository Layout
 

@@ -1,9 +1,9 @@
 ---
-name: google-icons
-description: Download Material Symbols icons from Google Fonts as Android Vector Drawable XML, SVG, or Android Compose Kotlin. Search icons by name, multiple styles supported (outlined, rounded, sharp).
+name: material-symbols-downloader
+description: Search and download Material Symbols (Material Icons) from Google Fonts as Android Vector Drawable XML, SVG, Android Compose Kotlin ImageVector, or Apple symbol SVG. Supports outlined, rounded, and sharp styles plus fill, weight, and grade variants.
 ---
 
-# Google Icons Skill
+# Material Symbols Downloader
 
 This skill provides tools to search and download Material Symbols icons from Google Fonts for Android, web, and Apple development. Icons can be downloaded as Android Vector Drawable XML, SVG, or Android Compose Kotlin.
 
