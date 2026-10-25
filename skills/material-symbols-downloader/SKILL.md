@@ -149,6 +149,40 @@ Icon(
     android:src="@drawable/ic_home" />
 ```
 
+## Using Downloaded Icons in Xcode
+
+Icons downloaded with `--format apple` are **SF Symbols custom symbol templates**, not plain images. One file contains the icon in several weights and scales, so the `--weight` option is ignored for this format and `--size` does not apply.
+
+To add one to an iOS or macOS project:
+1. Download it with the name you want to use in code, for example `--output toggle_on.svg`.
+2. Add it to the asset catalog. In Xcode, drag the file into `Assets.xcassets`. Without Xcode, create the symbol set by hand:
+
+```text
+Assets.xcassets/toggle_on.symbolset/toggle_on.svg
+Assets.xcassets/toggle_on.symbolset/Contents.json
+```
+
+```json
+{
+  "info": { "author": "xcode", "version": 1 },
+  "symbols": [{ "filename": "toggle_on.svg", "idiom": "universal" }]
+}
+```
+
+3. Use it like any SF Symbol. It follows the current font weight and scale:
+
+```swift
+// SwiftUI
+Image("toggle_on")
+    .font(.title2.weight(.semibold))
+    .foregroundStyle(.tint)
+
+// UIKit
+let image = UIImage(named: "toggle_on")
+```
+
+Custom symbols require iOS 13 / macOS 11 or later. Use `--format svg` instead if you need a plain image asset.
+
 ## Available Sizes
 
 Material Symbols are published in these sizes:
