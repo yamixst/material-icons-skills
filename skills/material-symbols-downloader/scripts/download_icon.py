@@ -22,6 +22,7 @@ from pathlib import Path
 METADATA_URL = "https://fonts.google.com/metadata/icons?incomplete=1&key=material_symbols"
 CACHE_DIR = Path(tempfile.gettempdir()) / f"google-fonts-{getpass.getuser()}"
 CACHE_FILE = CACHE_DIR / "google_icons_metadata.json"
+SYMBOLS_FAMILY = "Material Symbols Outlined"
 
 # Material Symbols style mapping
 MATERIAL_SYMBOLS_STYLES = {
@@ -88,18 +89,47 @@ def fetch_metadata(force_refresh=False):
         sys.exit(1)
 
 
+def symbol_icons(metadata):
+    """Return icons available in Material Symbols (metadata also lists legacy Material Icons)."""
+    return [
+        icon for icon in metadata.get('icons', [])
+        if SYMBOLS_FAMILY not in icon.get('unsupported_families', [])
+    ]
+
+
+def match_rank(icon, word):
+    """Rank how well a single query word matches an icon (lower is better, None if no match)."""
+    name = icon.get('name', '').lower()
+    tags = [tag.lower() for tag in icon.get('tags', [])]
+    if word == name:
+        return 0
+    if word in tags or name.startswith(word):
+        return 1
+    if word in name:
+        return 2
+    if any(word in tag for tag in tags):
+        return 3
+    return None
+
+
 def search_icons(metadata, query):
-    """Search icons by name."""
+    """Search icons by name and tags, best matches and most popular icons first."""
+    words = query.lower().replace('_', ' ').split()
+    if not words:
+        return []
+
     results = []
-    icons = metadata.get('icons', [])
+    for icon in symbol_icons(metadata):
+        ranks = [match_rank(icon, word) for word in words]
+        if None in ranks:
+            continue
+        # Also allow the whole query to match a multi-word name such as "arrow_back"
+        name_rank = match_rank(icon, '_'.join(words))
+        rank = min(sum(ranks), name_rank * len(words)) if name_rank is not None else sum(ranks)
+        results.append((rank, -icon.get('popularity', 0), icon))
 
-    query_lower = query.lower()
-    for icon in icons:
-        name = icon.get('name', '')
-        if query_lower in name.lower():
-            results.append(icon)
-
-    return results
+    results.sort(key=lambda item: (item[0], item[1]))
+    return [icon for _, _, icon in results]
 
 
 def build_variant_axis_query(size=24, weight=DEFAULT_WEIGHT, fill=DEFAULT_FILL, grade=DEFAULT_GRADE, roundness=DEFAULT_ROUND):
@@ -286,7 +316,7 @@ def main():
     group.add_argument(
         '-q', '--search',
         type=str,
-        help='Search icons by name (partial match)'
+        help='Search icons by name and tags (e.g. "trash", "arrow back")'
     )
     group.add_argument(
         '-n', '--name',

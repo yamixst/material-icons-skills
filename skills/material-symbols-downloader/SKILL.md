@@ -58,7 +58,7 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 
 | Parameter | Short | Description | Default |
 |-----------|-------|-------------|---------|
-| `--search` | `-q` | Search icons by name (lists matching icons) | - |
+| `--search` | `-q` | Search icons by name and tags, best matches first | - |
 | `--name` | `-n` | Icon name to download | - |
 | `--style` | `-s` | Icon style: `outlined`, `rounded`, `sharp` | `outlined` |
 | `--size` | `-sz` | Size in px: `20`, `24`, `40`, `48` | `24` |
