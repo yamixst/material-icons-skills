@@ -67,6 +67,7 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --f
 | `--weight` | - | Weight axis choices: `100`, `200`, `300`, `400`, `500`, `600`, `700` | `400` |
 | `--grade` | - | Grade axis choices: `-25`, `0`, `200` | `0` |
 | `--output` | `-o` | Output file or directory; a wrong extension is replaced with a warning | `./ic_<name>.<ext>` |
+| `--package` | - | Kotlin package for `compose` (inferred from a `java/` or `kotlin/` output path) | - |
 | `--refresh` | - | Force refresh metadata cache | `False` |
 
 ## Usage Examples
@@ -99,7 +100,8 @@ python3 scripts/download_icon.py --name toggle_on --style sharp --fill 1 --weigh
 python3 scripts/download_icon.py --name toggle_on --style sharp --format svg --fill 1 --weight 700 --grade 200 --output assets/toggle_on.svg
 
 # Android Compose Kotlin source
-python3 scripts/download_icon.py --name toggle_on --style sharp --format compose --fill 1 --weight 700 --grade 200 --output app/src/main/java/icons/ToggleOn.kt
+python3 scripts/download_icon.py --name toggle_on --style sharp --format compose --fill 1 --weight 700 --grade 200 --output app/src/main/java/com/example/app/icons/
+# -> app/src/main/java/com/example/app/icons/ToggleOn.kt with `package com.example.app.icons` and `val ToggleOn: ImageVector`
 
 # Apple symbol SVG
 python3 scripts/download_icon.py --name toggle_on --style outlined --format apple --fill 1 --grade 200 --output Assets/toggle_on_symbol.svg
@@ -154,7 +156,7 @@ When downloading icons:
 - Use `ic_` prefix for icon files (e.g., `ic_home.xml`)
 - Consider adding style suffix for non-default styles (e.g., `ic_home_rounded.xml`)
 - Consider adding size suffix for non-standard sizes (e.g., `ic_home_48.xml`)
-- Compose files are usually better with PascalCase filenames (e.g., `Home.kt`)
+- Compose files default to PascalCase names (e.g., `ArrowBack.kt`), and the `ImageVector` property is renamed to match (`ArrowBack`)
 - Apple SVG assets can keep the icon name directly (e.g., `toggle_on.svg`)
 
 ## Notes

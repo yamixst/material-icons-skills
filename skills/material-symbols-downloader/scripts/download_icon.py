@@ -14,6 +14,7 @@ import difflib
 import getpass
 import gzip
 import json
+import re
 import sys
 import tempfile
 import urllib.request
@@ -264,9 +265,44 @@ def build_download_url(
     )
 
 
+def compose_identifier(icon_name):
+    """Convert an icon name to a PascalCase Kotlin identifier, e.g. arrow_back -> ArrowBack."""
+    identifier = ''.join(part[:1].upper() + part[1:] for part in icon_name.split('_'))
+    if identifier[:1].isdigit():
+        identifier = f"Icon{identifier}"
+    return identifier
+
+
 def default_file_name(icon_name, output_format):
     """Default output file name for an icon."""
+    if output_format == 'compose':
+        return f"{compose_identifier(icon_name)}.kt"
     return f"ic_{icon_name}{OUTPUT_FORMATS[output_format]}"
+
+
+def infer_kotlin_package(output_file):
+    """Infer a Kotlin package from a path inside a java/ or kotlin/ source root."""
+    parts = output_file.resolve().parent.parts
+    for root in ('kotlin', 'java'):
+        if root in parts:
+            package_parts = parts[len(parts) - parts[::-1].index(root):]
+            if package_parts:
+                return '.'.join(package_parts)
+    return None
+
+
+def prepare_compose_source(content, icon_name, package):
+    """Rename the generated ImageVector to PascalCase and set the Kotlin package."""
+    identifier = compose_identifier(icon_name)
+    content = content.replace(f"public val {icon_name}:", f"public val {identifier}:")
+    content = re.sub(rf"\b_{re.escape(icon_name)}\b", f"_{identifier}", content)
+    content = content.replace(f'name = "{icon_name}"', f'name = "{identifier}"')
+    if package:
+        content = re.sub(r"^package .*$", f"package {package}", content, count=1, flags=re.MULTILINE)
+    else:
+        content = re.sub(r"^package .*\n+", "", content, count=1, flags=re.MULTILINE)
+        print("Warning: no Kotlin package set, use --package to add one.", file=sys.stderr)
+    return content
 
 
 def resolve_output_path(icon_name, output_path, output_format):
@@ -309,6 +345,7 @@ def download_material_symbols(
     fill=DEFAULT_FILL,
     weight=DEFAULT_WEIGHT,
     grade=DEFAULT_GRADE,
+    package=None,
 ):
     """Download a Material Symbol in the requested format."""
 
@@ -338,6 +375,10 @@ def download_material_symbols(
             content = read_text_response(response)
 
             output_file = resolve_output_path(icon_name, output_path, output_format)
+            if output_format == 'compose':
+                content = prepare_compose_source(
+                    content, icon_name, package or infer_kotlin_package(output_file)
+                )
             # Ensure output directory exists
             output_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -422,6 +463,11 @@ def main():
         help='Output file or directory (default: ic_<name>.<ext>)'
     )
     parser.add_argument(
+        '--package',
+        type=str,
+        help='Kotlin package for --format compose (default: inferred from a java/ or kotlin/ output path)'
+    )
+    parser.add_argument(
         '--refresh',
         action='store_true',
         help='Force refresh metadata cache'
@@ -461,6 +507,7 @@ def main():
             fill=args.fill,
             weight=args.weight,
             grade=args.grade,
+            package=args.package,
         )
         sys.exit(0 if success else 1)
 
