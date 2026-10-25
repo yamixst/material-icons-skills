@@ -7,6 +7,27 @@ description: Search and download Material Symbols (Material Icons, Google icons,
 
 This skill provides tools to search and download Material Symbols icons from Google Fonts for Android, web, and Apple development. Icons can be downloaded as Android Vector Drawable XML, SVG, Android Compose Kotlin, or Apple symbol SVG.
 
+## Workflow
+
+Follow these steps when the user needs an icon:
+
+1. **Pick the format from the project type**, unless the user asked for one:
+
+   | Project | Format | Where to save |
+   |---------|--------|---------------|
+   | Android with XML views or `painterResource` | `xml` | `app/src/main/res/drawable/` |
+   | Jetpack Compose, icons as code | `compose` | a package such as `.../java/<package>/ui/icons/` |
+   | Web, Flutter, React Native, design files | `svg` | the project's assets folder (`public/icons/`, `assets/icons/`, ...) |
+   | iOS / macOS (SwiftUI, UIKit, AppKit) | `apple` | `Assets.xcassets/<name>.symbolset/` |
+
+2. **Match the existing icons.** Look at icons already in the project before downloading. Reuse their style (outlined, rounded, sharp), fill, file naming (`ic_` prefix, suffixes), and folder. If the project already has the icon, use it instead of downloading a duplicate.
+3. **Find the icon name.** Search by meaning, not only by exact name: `--search "trash"` finds `delete`, `--search gear` finds `settings`. Results are ordered by relevance and popularity, so the first result is usually the right choice. Use `--json` to see tags when choosing between candidates.
+4. **Download** all needed icons in one run, straight into the target folder:
+   `python3 scripts/download_icon.py --name home settings --style rounded --output app/src/main/res/drawable/`
+   If a name is wrong, the script exits with an error and suggests similar names.
+5. **Wire it up** if the user asked for it to be used in the UI: see the usage sections below. Always set a meaningful `contentDescription` / accessibility label.
+6. **Report** which icons were added, in which style and format, and where.
+
 ## Overview
 
 Material Symbols are Google's modern icon set, available in three styles:
