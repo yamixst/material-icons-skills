@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import difflib
 import getpass
 import gzip
 import json
@@ -50,8 +51,8 @@ DEFAULT_GRADE = 0
 DEFAULT_ROUND = 50
 
 
-def fetch_metadata(force_refresh=False):
-    """Fetch and cache icon metadata."""
+def fetch_metadata(force_refresh=False, exit_on_error=True):
+    """Fetch and cache icon metadata. Returns None on failure when exit_on_error is False."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     if not force_refresh and CACHE_FILE.exists():
@@ -86,7 +87,9 @@ def fetch_metadata(force_refresh=False):
             except (json.JSONDecodeError, IOError):
                 pass
         print(f"Error fetching metadata: {e}", file=sys.stderr)
-        sys.exit(1)
+        if exit_on_error:
+            sys.exit(1)
+        return None
 
 
 def symbol_icons(metadata):
@@ -130,6 +133,37 @@ def search_icons(metadata, query):
 
     results.sort(key=lambda item: (item[0], item[1]))
     return [icon for _, _, icon in results]
+
+
+def suggest_icon_names(metadata, name, limit=5):
+    """Suggest existing icon names for a misspelled or unknown name."""
+    names = [icon.get('name', '') for icon in symbol_icons(metadata)]
+    candidates = (
+        difflib.get_close_matches(name.lower(), names, n=limit, cutoff=0.75)
+        + [icon.get('name') for icon in search_icons(metadata, name)[:limit]]
+        + difflib.get_close_matches(name.lower(), names, n=limit, cutoff=0.6)
+    )
+    suggestions = []
+    for candidate in candidates:
+        if candidate not in suggestions:
+            suggestions.append(candidate)
+    suggestions = suggestions[:limit]
+    return suggestions
+
+
+def check_icon_name(metadata, name):
+    """Return True if the icon exists, otherwise print suggestions and return False."""
+    if metadata is None:
+        return True  # Cannot validate offline, let the download decide
+    if any(icon.get('name') == name for icon in symbol_icons(metadata)):
+        return True
+    print(f"Icon '{name}' not found in Material Symbols.", file=sys.stderr)
+    suggestions = suggest_icon_names(metadata, name)
+    if suggestions:
+        print(f"Did you mean: {', '.join(suggestions)}?", file=sys.stderr)
+    else:
+        print("Use --search to find icon names.", file=sys.stderr)
+    return False
 
 
 def build_variant_axis_query(size=24, weight=DEFAULT_WEIGHT, fill=DEFAULT_FILL, grade=DEFAULT_GRADE, roundness=DEFAULT_ROUND):
@@ -299,8 +333,7 @@ def download_material_symbols(
     except urllib.error.HTTPError as e:
         print(f"HTTP Error {e.code}: {e.reason}", file=sys.stderr)
         if e.code == 404:
-            print(f"Icon '{icon_name}' not found for format '{output_format}' in '{style}' style.", file=sys.stderr)
-            print(f"Available styles: {', '.join(MATERIAL_SYMBOLS_STYLES.keys())}", file=sys.stderr)
+            print(f"Icon '{icon_name}' is not available as '{output_format}' in '{style}' style.", file=sys.stderr)
         return False
     except (urllib.error.URLError, IOError) as e:
         print(f"Error downloading icon: {e}", file=sys.stderr)
@@ -399,6 +432,9 @@ def main():
 
     elif args.name:
         # Download mode
+        metadata = fetch_metadata(force_refresh=args.refresh, exit_on_error=False)
+        if not check_icon_name(metadata, args.name):
+            sys.exit(1)
         success = download_material_symbols(
             icon_name=args.name,
             style=args.style,
